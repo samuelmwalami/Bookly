@@ -52,8 +52,18 @@ async def add_book(book:Book):
     return new_book
 
 @app.patch("/book/{book_id}")
-async def update_book():
-    pass
+async def update_book(book:UpdateBook,book_id:int):
+    book_update = book.model_dump()
+    books = load_books()
+    for book in books:
+        if book["id"] == book_id:
+            book["title"] = book_update["title"]            
+            book["author"] = book_update["author"]
+            book["publisher"] = book_update["publisher"]
+            book["page_count"] = book_update["page_count"]
+            book["language"] = book_update["language"]
+            updated_book = book
+    return book
 
 @app.delete("/book/{book_id}")
 async def delete_book():
