@@ -27,7 +27,7 @@ class UpdateBook(BaseModel):
     
 
 
-def load_books():
+def load_books() -> dict:
     if os.path.exists("books.json"):
         with open("books.json","r") as f:
            books = json.loads(f.read())
@@ -36,11 +36,10 @@ books = load_books()
 
 @app.get("/books", response_model=List[Book] ,status_code=status.HTTP_200_OK)
 async def get_books():
-    return load_books()
+    return books
 
 @app.get("/book/{book_id}",response_model=Book,status_code=status.HTTP_200_OK)
-async def get_book(book_id:int):
-    books = load_books()
+async def get_book(book_id:int) -> dict: 
     for book in books:
         if book["id"] == book_id:
             my_book = book
@@ -52,7 +51,7 @@ async def add_book(book:Book):
     return new_book
 
 @app.patch("/book/{book_id}")
-async def update_book(book:UpdateBook,book_id:int):
+async def update_book(book:UpdateBook,book_id:int) -> dict:
     book_update = book.model_dump()
     books = load_books()
     for book in books:
@@ -66,5 +65,5 @@ async def update_book(book:UpdateBook,book_id:int):
     return book
 
 @app.delete("/book/{book_id}")
-async def delete_book():
+async def delete_book() -> dict:
     pass
